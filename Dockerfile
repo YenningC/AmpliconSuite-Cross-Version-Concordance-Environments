@@ -2,7 +2,7 @@
 FROM python:3.12-slim-bookworm@sha256:0f086103b026048cc50cb5da25ec435c023c5241a83fc44daea593377abc61c4
 
 ARG TARGETARCH
-ARG BENCHMARKS_COMMIT
+ARG BENCHMARKS_COMMIT=61a720bcf4de25ac5103961cbd80dd4bef315b34
 COPY requirements/ /opt/environment-requirements/
 RUN test "$TARGETARCH" = amd64 \
     && apt-get update \
