@@ -2,7 +2,7 @@
 
 一个面向 Linux x86-64 服务器的容器环境，供 [AmpliconSuite Cross-Version Concordance 0.4.0](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance) 使用。镜像把十一个 Suite 版本共用的依赖装好，包含两套隔离 CNVkit、两套 BFBArchitect 和 R/DNAcopy。用户拉取一张镜像后，按步骤准备源码缓存和样本清单即可开始。
 
-> **0.4.0 镜像待构建、验证和发布。** 本版增加批量样本导入、逐样本图和整组统计兼容图。查看实际构建与发布状态。 [GitHub Actions](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance-Environments/actions) · [验证记录](VALIDATION.md)
+> **0.4.0 镜像已发布，Linux 构建、合成组件测试和批量流程回归均通过。** 本版增加批量样本导入、逐样本图和整组统计兼容图。[本次验证与发布](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance-Environments/actions/runs/44125577173) · [验证记录](VALIDATION.md)
 
 [English quick start](#english-quick-start) · [MIT 许可证](LICENSE) · [第三方许可和组件来源](THIRD_PARTY.md) · [仓库维护者发布步骤](#维护者发布镜像)
 
@@ -15,7 +15,7 @@
 
 ## 第一次使用
 
-以下命令在 Bash 中执行。镜像发布后可按以下步骤拉取，也可按文末说明构建本地镜像。为 0.4.0 使用独立的 `cache-0.4.0` 源码缓存。
+以下命令在 Bash 中执行。可直接拉取已发布镜像，也可按文末说明构建本地镜像。为 0.4.0 使用独立的 `cache-0.4.0` 源码缓存。
 
 ```bash
 IMAGE=ghcr.io/yenningc/ampliconsuite-cross-version-concordance-environments:0.4.0
@@ -202,7 +202,7 @@ run_image -v "$PWD/mosek-python:/sdk" \
 
 ## English quick start
 
-This environment repository builds one Linux x86-64 container for the eleven locked Suite recipes used by AmpliconSuite Cross-Version Concordance 0.4.0. The 0.4.0 image awaits its own build, tests and publication. It installs two isolated CNVkit releases, both BFBArchitect releases, CBC, Clarabel, R/DNAcopy, samtools and bedtools. After a successful publishing run, users pull the image once. `bootstrap` retrieves the pinned program release separately, and `prepare-panel` retrieves and verifies the selected upstream AA/AC sources into a reusable cache. `configure-runtime` generates an `asconcordance` manifest from your local input template. Follow the Docker commands above.
+This environment repository builds one Linux x86-64 container for the eleven locked Suite recipes used by AmpliconSuite Cross-Version Concordance 0.4.0. The 0.4.0 image passed its Linux build, synthetic component tests and all 24 batch/cohort/progress regressions, and is published on GHCR. It installs two isolated CNVkit releases, both BFBArchitect releases, CBC, Clarabel, R/DNAcopy, samtools and bedtools. Users can pull the published image once. `bootstrap` retrieves the pinned program release separately, and `prepare-panel` retrieves and verifies the selected upstream AA/AC sources into a reusable cache. `configure-runtime` generates an `asconcordance` manifest from your local input template. Follow the Docker commands above.
 
 The environment repository and Concordance source use the MIT license. The bundled dependencies and programs fetched separately retain their upstream licenses. Historical AA needs the vendor's Mosek client. [Environment license](LICENSE) · [Main project license](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance/blob/main/LICENSE) · [Third-party licenses](THIRD_PARTY.md) The oldest eight Suite recipes also need a valid license. AA in Suite 1.6.0 and 1.6.1 uses Clarabel here but still imports the client at startup. Suite 1.6.2 uses Clarabel without the client. Patient inputs, reference files and license files remain in user-provided mounts. The Dockerfile pins the 0.4.0 program commit. The build verifies every locked file, and `bootstrap` reuses that exact commit. Use a new `cache-0.4.0` directory.
 
