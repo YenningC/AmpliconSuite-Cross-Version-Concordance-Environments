@@ -11,7 +11,7 @@ from ascompare.versions import load_lock, prepare_component
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, default=Path('/sources'))
-    parser.add_argument('--versions', nargs='+', help='Defaults to all ten locked Suite versions')
+    parser.add_argument('--versions', nargs='+', help='Defaults to all locked Suite versions')
     args = parser.parse_args()
     lock = load_lock()
     panel = {entry['id']: entry for entry in lock['versions'] if entry.get('suite')}

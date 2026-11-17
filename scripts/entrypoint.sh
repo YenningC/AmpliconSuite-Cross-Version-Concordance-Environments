@@ -18,11 +18,7 @@ case "$command_name" in
 esac
 
 export ASBENCH_CHECKOUT=/cache/benchmarks
-if [ ! -f "$ASBENCH_CHECKOUT/.benchmarks-commit" ] || \
-   [ "$(cat "$ASBENCH_CHECKOUT/.benchmarks-commit")" != 'aed3fb71b42c9ebaaa4bd4530552fcaf9a64ae34' ]; then
-  echo 'Mount the prepared cache at /cache and run bootstrap first.' >&2
-  exit 2
-fi
+"$python" "$scripts/bootstrap.py" --verify-cache
 # The comparison interpreter loads the separately fetched Benchmarks checkout.
 # A user-mounted solver SDK is configured per Suite runtime.
 export PYTHONPATH="$ASBENCH_CHECKOUT"

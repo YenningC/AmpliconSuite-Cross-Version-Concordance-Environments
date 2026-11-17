@@ -1,5 +1,6 @@
 **
 !Dockerfile
+!benchmarks-source.lock.json
 !requirements/
 !requirements/*.txt
 !scripts/

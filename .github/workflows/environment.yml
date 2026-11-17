@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   linux-amd64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     permissions:
       contents: read
@@ -23,7 +23,7 @@ jobs:
     env:
       IMAGE: asbench-environment:ci
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Build Linux image
@@ -47,10 +47,11 @@ jobs:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           registry="ghcr.io/${GITHUB_REPOSITORY,,}"
-          version="0.2.0-${GITHUB_SHA:0:12}"
+          version=$(python3 -c 'import json; print(json.load(open("benchmarks-source.lock.json"))["version"])')
+          revision="$version-${GITHUB_SHA:0:12}"
           printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          docker tag "$IMAGE" "$registry:$revision"
+          docker push "$registry:$revision"
           docker tag "$IMAGE" "$registry:$version"
           docker push "$registry:$version"
-          docker tag "$IMAGE" "$registry:0.2.0"
-          docker push "$registry:0.2.0"
-          docker inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$registry:$version" >> "$GITHUB_STEP_SUMMARY"
+          docker inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$registry:$revision" >> "$GITHUB_STEP_SUMMARY"
