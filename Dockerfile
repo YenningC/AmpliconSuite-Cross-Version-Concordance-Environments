@@ -2,7 +2,7 @@
 FROM python:3.12-slim-bookworm@sha256:0f086103b026048cc50cb5da25ec435c023c5241a83fc44daea593377abc61c4
 
 ARG TARGETARCH
-ARG CONCORDANCE_COMMIT=ae4d13edec26500558686c2c9fa31da0e9673c40
+ARG CONCORDANCE_COMMIT=ea46c70cf9aa337d2a6189455532c8aba31ab2ef
 COPY requirements/ /opt/environment-requirements/
 RUN test "$TARGETARCH" = amd64 \
     && apt-get update \

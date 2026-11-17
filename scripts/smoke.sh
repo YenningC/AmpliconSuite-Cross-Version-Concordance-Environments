@@ -9,6 +9,11 @@ Rscript -e 'cat(as.character(packageVersion("DNAcopy")), "\n")'
 cd "$CONCORDANCE_CHECKOUT"
 "$python" -m ascompare.concordance demo --out "$root/results-only"
 test -s "$root/results-only/report.md"
+test -s "$root/results-only/cohort_compatibility_metrics.tsv"
+test -s "$root/results-only/sample_reports.md"
+for test_file in test_concordance_batch.py test_concordance_cohort_plot.py test_concordance_progress.py; do
+  "$python" -m unittest discover -s tests -p "$test_file" -v
+done
 /opt/concordance-venvs/aa/bin/python scripts/probe_clarabel.py \
   --sources /sources --out "$root/clarabel-probes.json"
 "$python" /opt/environment-scripts/smoke_components.py /sources/prepared_panel.json
