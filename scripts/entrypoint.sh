@@ -8,7 +8,7 @@ python=/opt/benchmarks-venvs/benchmark/bin/python
 
 case "$command_name" in
   help|-h|--help)
-    echo 'AmpliconSuite Benchmarks Environments'
+    echo 'AmpliconSuite Cross-Version Concordance Environments'
     echo 'Commands: bootstrap, prepare-panel, configure-runtime, asbench, environment-smoke, inventory'
     echo 'Read the environment repository README for mounts and solver licensing.'
     exit 0

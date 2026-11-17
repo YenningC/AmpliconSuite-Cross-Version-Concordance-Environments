@@ -1,6 +1,6 @@
 # Software sources and permissions
 
-This is an environment for research use. Use of AmpliconSuite Benchmarks itself is governed by [the Benchmarks project's permission notice](https://github.com/YenningC/AmpliconSuite-Benchmarks/blob/main/LICENSE_STATUS.md). The container does not contain its checkout or change the project's permission terms. `bootstrap` obtains the pinned checkout separately from its GitHub repository.
+This is an environment for research use. Use of AmpliconSuite Cross-Version Concordance itself is governed by [the project's permission notice](https://github.com/YenningC/AmpliconSuite-Benchmarks/blob/main/LICENSE_STATUS.md). The container does not contain its checkout or change the project's permission terms. `bootstrap` obtains the pinned checkout separately from its GitHub repository.
 
 | Component | Source and packaging |
 |---|---|

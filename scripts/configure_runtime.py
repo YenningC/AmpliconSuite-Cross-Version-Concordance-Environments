@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Configure pinned AmpliconSuite Benchmarks runtimes inside the environment image."""
+"""Configure pinned AmpliconSuite Cross-Version Concordance runtimes inside the environment image."""
 
 import argparse
 import copy

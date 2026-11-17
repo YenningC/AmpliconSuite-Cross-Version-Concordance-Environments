@@ -1,19 +1,21 @@
-# AmpliconSuite Benchmarks Environments
+# AmpliconSuite Cross-Version Concordance Environments
 
-一个面向 Linux x86-64 服务器的容器环境，供 [AmpliconSuite Benchmarks 0.3.0](https://github.com/YenningC/AmpliconSuite-Benchmarks) 使用。镜像把十一个 Suite 版本共用的依赖装好，包含两套隔离 CNVkit、两套 BFBArchitect 和 R/DNAcopy。用户拉取一张镜像后，按步骤准备源码缓存和样本清单即可开始。
+一个面向 Linux x86-64 服务器的容器环境，供 [AmpliconSuite Cross-Version Concordance 0.3.0](https://github.com/YenningC/AmpliconSuite-Benchmarks) 使用。镜像把十一个 Suite 版本共用的依赖装好，包含两套隔离 CNVkit、两套 BFBArchitect 和 R/DNAcopy。用户拉取一张镜像后，按步骤准备源码缓存和样本清单即可开始。
 
-> **0.3.0 镜像已发布，支持 Linux x86-64。** GitHub Actions 通过了构建和人工数据组件测试。固定摘要为 `sha256:2273905bd8417cfd2d63af8f25e29c36383b70d2298954ebd834e7ca91959710`。0.2.0 标签仍可供 Benchmarks 0.2.0 使用。 [容器包](https://github.com/YenningC/AmpliconSuite-Benchmarks-Environments/pkgs/container/ampliconsuite-benchmarks-environments) · [0.3.0 发布记录](https://github.com/YenningC/AmpliconSuite-Benchmarks-Environments/actions/runs/44042036496)
+> **0.3.0 镜像已发布，支持 Linux x86-64。** 镜像对应更名前的固定源码提交。 GitHub Actions 通过了构建和人工数据组件测试。固定摘要为 `sha256:2273905bd8417cfd2d63af8f25e29c36383b70d2298954ebd834e7ca91959710`。0.2.0 标签仍可供历史 0.2.0 版使用。 [容器包](https://github.com/YenningC/AmpliconSuite-Benchmarks-Environments/pkgs/container/ampliconsuite-benchmarks-environments) · [0.3.0 发布记录](https://github.com/YenningC/AmpliconSuite-Benchmarks-Environments/actions/runs/44042036496)
 
 [English quick start](#english-quick-start) · [第三方许可和组件来源](THIRD_PARTY.md) · [仓库维护者发布步骤](#维护者发布镜像)
 
 ## 你需要什么
 
 - Linux x86-64 服务器上的 Docker。Docker Desktop 也可尝试 `--platform linux/amd64`，在 ARM 主机上会使用仿真，当前未在该组合上验证。
-- 使用 Benchmarks 代码前，向其权利人取得书面许可。镜像内装的是运行依赖。`bootstrap` 会从原仓库单独下载固定版本代码。
-- 只比较已有结果时需要两套可配对的结果及已知版本。有 BAM 的重跑还需要排序 BAM 和现成索引、已有种子 BED、参考 FASTA/索引、AA 数据资源、背景区段，以及所选 CNV 参考策略的输入。参见 [Benchmarks 示例与输入说明](https://github.com/YenningC/AmpliconSuite-Benchmarks#two-input-modes)。
+- 使用主程序代码前，向其权利人取得书面许可。镜像内装的是运行依赖。`bootstrap` 会从原仓库单独下载固定版本代码。
+- 只比较已有结果时需要两套可配对的结果及已知版本。有 BAM 的重跑还需要排序 BAM 和现成索引、已有种子 BED、参考 FASTA/索引、AA 数据资源、背景区段，以及所选 CNV 参考策略的输入。参见 [主程序示例与输入说明](https://github.com/YenningC/AmpliconSuite-Benchmarks#two-input-modes)。
 - 若要运行早于 Suite 1.6.2 的 AA，见下方 Mosek 说明。仅比较已有结果或仅跑 AC 无需 Mosek。
 
 ## 第一次使用
+
+已发布镜像沿用 `ampliconsuite-benchmarks-environments` 地址。
 
 以下命令在 Bash 中执行。可直接拉取已发布的 0.3.0 镜像，也可按文末说明构建本地镜像。使用新的 `cache-0.3`，让两个发行版的源码缓存各自独立。
 
@@ -111,17 +113,17 @@ run_image -v "$PWD/mosek-python:/sdk" \
 
 ## 维护者发布镜像
 
-1. 先把 Benchmarks 0.3.0 源码提交到 [主程序仓库](https://github.com/YenningC/AmpliconSuite-Benchmarks) 的 `main`，再更新环境库根目录。提交文件包括 `.github/workflows/environment.yml`、`.dockerignore` 和 `benchmarks-source.lock.json`。0.3.0 的 Dockerfile 固定到已核验的主程序提交。构建会逐一核对源码锁中的 87 个文件后才安装 Benchmarks 的 Python 依赖。镜像记录通过核验的提交，`bootstrap` 始终下载该提交。
+1. 先把待发布的主程序源码提交到 [主程序仓库](https://github.com/YenningC/AmpliconSuite-Benchmarks) 的 `main`，再更新环境库根目录。提交文件包括 `.github/workflows/environment.yml`、`.dockerignore` 和 `benchmarks-source.lock.json`。0.3.0 的 Dockerfile 固定到已核验的主程序提交。构建会逐一核对源码锁中的 87 个文件后才安装主程序的 Python 依赖。镜像记录通过核验的提交，`bootstrap` 始终下载该提交。
 2. 在 **Actions → Build and test the Linux environment** 查看首次构建。它会核验十一版 AC 的源码和启动、两个 BFB/CBC、小型 Clarabel 问题、两版 CNVkit 局部 CBS 和报告示例。真实患者和商业许可证不用于 CI。
-3. 首次测试通过后，在同一工作流上点 **Run workflow**，选择默认分支并勾选 `publish`。此时工作流会再次构建、测试，然后用当前仓库的 `GITHUB_TOKEN` 发布到 `ghcr.io/<owner>/<repository>:0.3.0` 和带提交号的标签。运行 Summary 会记录镜像 digest。
+3. 首次测试通过后，在同一工作流上点 **Run workflow**，选择默认分支并勾选 `publish`。此时工作流会再次构建、测试，然后用当前仓库的 `GITHUB_TOKEN` 发布到 `ghcr.io/yenningc/ampliconsuite-benchmarks-environments:0.3.0` 和带提交号的标签。运行 Summary 会记录镜像 digest。
 4. 若希望别人免登录拉取，在该容器包的设置中确认可见性。代码仓库和容器包各有自己的发布权限。重复分析建议在清单旁记录具体镜像 digest。参见 [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)。
 
-也可在 Docker 构建机执行 `docker build --platform linux/amd64 -t asbench-environment:0.3.0 .`，然后把示例的 `IMAGE` 改为这个本地标签。复现历史构建时可加 `--build-arg BENCHMARKS_COMMIT=<完整提交哈希>`，提交内容仍需通过源码锁校验。`inventory` 命令显示 Benchmarks 版本、实际提交及源码锁摘要。完整 Python freeze 和 Debian 软件版本保存在镜像的 `/opt/environment-provenance/`。
+也可在 Docker 构建机执行 `docker build --platform linux/amd64 -t asbench-environment:0.3.0 .`，然后把示例的 `IMAGE` 改为这个本地标签。复现历史构建时可加 `--build-arg BENCHMARKS_COMMIT=<完整提交哈希>`，提交内容仍需通过源码锁校验。`inventory` 命令显示主程序版本、实际提交及源码锁摘要。完整 Python freeze 和 Debian 软件版本保存在镜像的 `/opt/environment-provenance/`。
 
 这套镜像为比较端点固定关键依赖，并记录整个安装环境。它限定 CNVkit CBS，使用共享科学库和 CBC，不用于重现历史官方容器的每一个环境细节。基因组参考资源按项目与样本另行提供。
 
 ## English quick start
 
-This environment repository builds one Linux x86-64 container for the eleven locked Suite recipes used by AmpliconSuite Benchmarks 0.3.0. It installs two isolated CNVkit releases, both BFBArchitect releases, CBC, Clarabel, R/DNAcopy, samtools and bedtools. After a successful publishing run, users pull the image once. `bootstrap` retrieves the pinned Benchmarks release separately, and `prepare-panel` retrieves and verifies the selected upstream AA/AC sources into a reusable cache. `configure-runtime` generates an `asbench` manifest from your local input template. Follow the Docker commands above.
+This environment repository builds one Linux x86-64 container for the eleven locked Suite recipes used by AmpliconSuite Cross-Version Concordance 0.3.0. It installs two isolated CNVkit releases, both BFBArchitect releases, CBC, Clarabel, R/DNAcopy, samtools and bedtools. After a successful publishing run, users pull the image once. `bootstrap` retrieves the pinned program release separately, and `prepare-panel` retrieves and verifies the selected upstream AA/AC sources into a reusable cache. `configure-runtime` generates an `asbench` manifest from your local input template. Follow the Docker commands above.
 
-Request permission from the Benchmarks copyright holder before using their code. Historical AA needs the vendor's Mosek client. The oldest eight Suite recipes also need a valid license. AA in Suite 1.6.0 and 1.6.1 uses Clarabel here but still imports the client at startup. Suite 1.6.2 uses Clarabel without the client. Patient inputs, reference files and license files remain in user-provided mounts. GitHub Actions built, tested and published the Linux amd64 image for 0.3.0. The 0.2.0 tag remains available for Benchmarks 0.2.0. The Dockerfile pins the published 0.3.0 Benchmarks commit. The build verifies every locked file, and `bootstrap` reuses that exact commit. Use a new `cache-0.3` directory.
+Request permission from the project's copyright holder before using its code. Historical AA needs the vendor's Mosek client. The oldest eight Suite recipes also need a valid license. AA in Suite 1.6.0 and 1.6.1 uses Clarabel here but still imports the client at startup. Suite 1.6.2 uses Clarabel without the client. Patient inputs, reference files and license files remain in user-provided mounts. GitHub Actions built, tested and published the Linux amd64 image for 0.3.0. The 0.2.0 tag remains available for the historical 0.2.0 release. The Dockerfile pins the published 0.3.0 program commit. The build verifies every locked file, and `bootstrap` reuses that exact commit. Use a new `cache-0.3` directory.
