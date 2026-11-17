@@ -1,0 +1,56 @@
+name: Build and test the Linux environment
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the tested image to GitHub Container Registry
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  linux-amd64:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: asbench-environment:ci
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build Linux image
+        run: docker build --platform linux/amd64 --label "org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" -t "$IMAGE" .
+      - name: Prepare public locked sources
+        run: |
+          mkdir -p "$RUNNER_TEMP/asbench-cache" "$RUNNER_TEMP/asbench-sources"
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+            -v "$RUNNER_TEMP/asbench-cache:/cache" "$IMAGE" bootstrap
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+            -v "$RUNNER_TEMP/asbench-cache:/cache:ro" -v "$RUNNER_TEMP/asbench-sources:/sources" \
+            "$IMAGE" prepare-panel
+      - name: Test installed components on synthetic inputs
+        run: |
+          docker run --rm --network none --user "$(id -u):$(id -g)" -e HOME=/tmp \
+            -v "$RUNNER_TEMP/asbench-cache:/cache:ro" -v "$RUNNER_TEMP/asbench-sources:/sources:ro" \
+            "$IMAGE" environment-smoke
+      - name: Publish tested image on manual request
+        if: github.event_name == 'workflow_dispatch' && inputs.publish && github.ref_name == github.event.repository.default_branch
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          registry="ghcr.io/${GITHUB_REPOSITORY,,}"
+          version="0.2.0-${GITHUB_SHA:0:12}"
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          docker tag "$IMAGE" "$registry:$version"
+          docker push "$registry:$version"
+          docker tag "$IMAGE" "$registry:0.2.0"
+          docker push "$registry:0.2.0"
+          docker inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$registry:$version" >> "$GITHUB_STEP_SUMMARY"

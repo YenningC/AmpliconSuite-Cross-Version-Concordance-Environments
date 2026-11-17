@@ -1,0 +1,7 @@
+**
+!Dockerfile
+!requirements/
+!requirements/*.txt
+!scripts/
+!scripts/*.py
+!scripts/*.sh
