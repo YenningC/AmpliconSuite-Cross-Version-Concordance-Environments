@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import sys
 
-from ascompare.benchmark_import import _probe_json, _verify_ac_runtime
+from ascompare.concordance_import import _probe_json, _verify_ac_runtime
 from ascompare.versions import load_lock, verify_runtime
 from configure_runtime import configure_manifest
 
@@ -14,7 +14,7 @@ def main():
     lock = load_lock()
     prepared = json.loads(Path(sys.argv[1]).read_text())
     panel = {entry['id']: entry for entry in lock['versions'] if entry.get('suite')}
-    venvs = Path('/opt/benchmarks-venvs')
+    venvs = Path('/opt/concordance-venvs')
     base = {'mode': 'results_only', 'samples': [{'source_version': lock['reference_version']}]}
     env = dict(os.environ)
     for name in ('MOSEKLM_LICENSE_FILE', 'GRB_LICENSE_FILE'):

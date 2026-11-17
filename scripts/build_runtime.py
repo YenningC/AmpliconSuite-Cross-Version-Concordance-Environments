@@ -13,10 +13,10 @@ import tempfile
 import venv
 
 
-from source_lock import PROVENANCE, SOURCE_LOCK, fetch_benchmark, load_lock, resolve_commit
+from source_lock import PROVENANCE, SOURCE_LOCK, fetch_source, load_lock, resolve_commit
 
 
-VENV_ROOT = Path('/opt/benchmarks-venvs')
+VENV_ROOT = Path('/opt/concordance-venvs')
 REQUIREMENTS = Path('/opt/environment-requirements')
 
 
@@ -34,7 +34,7 @@ def make_venv(name, shared=True):
     return root / 'bin/python'
 
 
-def install_bfb(benchmark_python, ac_python, suite, directory, code):
+def install_bfb(concordance_python, ac_python, suite, directory, code):
     prepare = '''
 import sys
 from ascompare.versions import load_lock, prepare_component
@@ -43,7 +43,7 @@ entry = next(row for row in load_lock()['versions'] if row['id'] == sys.argv[1])
 print(prepare_component(entry['bfb'], Path(sys.argv[2])))
 '''
     source = subprocess.check_output(
-        [benchmark_python, '-c', prepare, suite, directory], text=True,
+        [concordance_python, '-c', prepare, suite, directory], text=True,
         env={**os.environ, 'PYTHONPATH': str(code)},
     ).strip()
     destination = directory / f'{suite}-bfb-build'
@@ -60,14 +60,14 @@ def save_inventory(pythons, commit, lock):
     packages = subprocess.check_output(['dpkg-query', '-W', '-f=${Package}\t${Version}\t${source:Package}\t${source:Version}\n'], text=True)
     (PROVENANCE / 'debian-packages.tsv').write_text(packages)
     (PROVENANCE / 'image.json').write_text(json.dumps({
-        'benchmark_version': lock['version'],
-        'benchmark_commit': commit,
-        'benchmark_file_lock_sha256': hashlib.sha256(SOURCE_LOCK.read_bytes()).hexdigest(),
-        'benchmark_file_lock': str(SOURCE_LOCK),
+        'concordance_version': lock['version'],
+        'concordance_commit': commit,
+        'concordance_file_lock_sha256': hashlib.sha256(SOURCE_LOCK.read_bytes()).hexdigest(),
+        'concordance_file_lock': str(SOURCE_LOCK),
         'python': platform.python_version(),
         'runtime_scope': 'Linux x86_64; CBC only; CNVkit CBS only',
         'omitted_backends': ['Mosek (optional user-mounted client)', 'Gurobi', 'pomegranate HMM stack'],
-        'source_lock': '/cache/benchmarks/versions.lock.json',
+        'source_lock': '/cache/concordance/versions.lock.json',
     }, indent=2) + '\n')
 
 
@@ -76,11 +76,11 @@ def main():
         raise SystemExit('Build requires Linux x86_64 and Python 3.12')
     lock = load_lock()
     try:
-        commit = resolve_commit(os.environ.get('BENCHMARKS_COMMIT'))
-        with tempfile.TemporaryDirectory(prefix='build-asbench-') as tmp:
+        commit = resolve_commit(os.environ.get('CONCORDANCE_COMMIT'))
+        with tempfile.TemporaryDirectory(prefix='build-concordance-') as tmp:
             directory = Path(tmp)
-            code = directory / 'benchmarks'
-            fetch_benchmark(code, commit, lock)
+            code = directory / 'concordance'
+            fetch_source(code, commit, lock)
             build_environments(directory, code, commit, lock)
     except ValueError as error:
         raise SystemExit(str(error)) from error
@@ -91,7 +91,7 @@ def build_environments(directory, code, commit, lock):
     # CNVkit is an optional BFB CLI dependency too. The modern tier shares its
     # libraries. CBS does not need the optional pomegranate/PyTorch HMM backend.
     pip(sys.executable, '--no-deps', '--no-build-isolation', 'CNVkit==0.9.13')
-    benchmark = make_venv('benchmark')
+    concordance = make_venv('concordance')
     aa = make_venv('aa')
     ac101 = make_venv('ac-bfb101')
     ac102 = make_venv('ac-bfb102')
@@ -103,9 +103,9 @@ def build_environments(directory, code, commit, lock):
     pip(cnv10, '--no-deps', '--no-build-isolation', 'pomegranate==1.1.2', 'CNVkit==0.9.10')
     for python, suite in ((ac101, 'suite-1.6.0'), (ac102, 'suite-1.6.2')):
         pip(python, 'PuLP==3.3.0')
-        install_bfb(benchmark, python, suite, directory, code)
+        install_bfb(concordance, python, suite, directory, code)
     save_inventory({
-        'benchmark': benchmark, 'aa': aa, 'ac-bfb101': ac101, 'ac-bfb102': ac102,
+        'concordance': concordance, 'aa': aa, 'ac-bfb101': ac101, 'ac-bfb102': ac102,
         'cnvkit-0.9.10': cnv10, 'cnvkit-0.9.13': cnv13,
     }, commit, lock)
 

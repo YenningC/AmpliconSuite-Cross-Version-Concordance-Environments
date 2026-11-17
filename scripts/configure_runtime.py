@@ -8,8 +8,8 @@ import os
 from pathlib import Path
 import sys
 
-from ascompare.benchmark import FIXED_REFERENCE
-from ascompare.benchmark_cnv import load_builtin_map
+from ascompare.concordance import FIXED_REFERENCE
+from ascompare.concordance_cnv import load_builtin_map
 from ascompare.versions import _check_source, load_lock
 
 
@@ -146,10 +146,10 @@ def configure_manifest(manifest, prepared, lock, venv_root, selected=None,
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", required=True, type=Path, help="Base benchmark JSON manifest")
+    parser.add_argument("--input", required=True, type=Path, help="Base concordance JSON manifest")
     parser.add_argument("--out", required=True, type=Path, help="New JSON file beside the input manifest")
     parser.add_argument("--prepared", type=Path, default=Path("/sources/prepared_panel.json"))
-    parser.add_argument("--venv-root", type=Path, default=Path("/opt/benchmarks-venvs"))
+    parser.add_argument("--venv-root", type=Path, default=Path("/opt/concordance-venvs"))
     parser.add_argument("--versions", nargs="+", help="Limit runtime and target versions to these Suite IDs plus the fixed reference")
     parser.add_argument("--mosek-pythonpath", type=Path, help="Mounted directory containing the user-installed MOSEK Python package")
     parser.add_argument("--mosek-license", type=Path, help="Mounted MOSEK license filename, required for MOSEK AA solver runs")

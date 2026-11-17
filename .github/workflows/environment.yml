@@ -21,7 +21,7 @@ jobs:
       contents: read
       packages: write
     env:
-      IMAGE: asbench-environment:ci
+      IMAGE: concordance-environment:ci
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -30,16 +30,16 @@ jobs:
         run: docker build --platform linux/amd64 --label "org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" -t "$IMAGE" .
       - name: Prepare public locked sources
         run: |
-          mkdir -p "$RUNNER_TEMP/asbench-cache" "$RUNNER_TEMP/asbench-sources"
+          mkdir -p "$RUNNER_TEMP/concordance-cache" "$RUNNER_TEMP/concordance-sources"
           docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
-            -v "$RUNNER_TEMP/asbench-cache:/cache" "$IMAGE" bootstrap
+            -v "$RUNNER_TEMP/concordance-cache:/cache" "$IMAGE" bootstrap
           docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
-            -v "$RUNNER_TEMP/asbench-cache:/cache:ro" -v "$RUNNER_TEMP/asbench-sources:/sources" \
+            -v "$RUNNER_TEMP/concordance-cache:/cache:ro" -v "$RUNNER_TEMP/concordance-sources:/sources" \
             "$IMAGE" prepare-panel
       - name: Test installed components on synthetic inputs
         run: |
           docker run --rm --network none --user "$(id -u):$(id -g)" -e HOME=/tmp \
-            -v "$RUNNER_TEMP/asbench-cache:/cache:ro" -v "$RUNNER_TEMP/asbench-sources:/sources:ro" \
+            -v "$RUNNER_TEMP/concordance-cache:/cache:ro" -v "$RUNNER_TEMP/concordance-sources:/sources:ro" \
             "$IMAGE" environment-smoke
       - name: Publish tested image on manual request
         if: github.event_name == 'workflow_dispatch' && inputs.publish && github.ref_name == github.event.repository.default_branch
@@ -47,7 +47,7 @@ jobs:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           registry="ghcr.io/${GITHUB_REPOSITORY,,}"
-          version=$(python3 -c 'import json; print(json.load(open("benchmarks-source.lock.json"))["version"])')
+          version=$(python3 -c 'import json; print(json.load(open("concordance-source.lock.json"))["version"])')
           revision="$version-${GITHUB_SHA:0:12}"
           printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
           docker tag "$IMAGE" "$registry:$revision"
