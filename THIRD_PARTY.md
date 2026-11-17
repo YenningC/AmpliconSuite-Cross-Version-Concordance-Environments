@@ -1,6 +1,6 @@
 # Software sources and permissions
 
-This is an environment for research use. Use of AmpliconSuite Cross-Version Concordance itself is governed by [the project's permission notice](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance/blob/main/LICENSE_STATUS.md). The container does not contain its checkout or change the project's permission terms. `bootstrap` obtains the pinned checkout separately from its GitHub repository.
+The environment's original scripts, configuration and documentation are available under the MIT license. `bootstrap` obtains a pinned release of AmpliconSuite Cross-Version Concordance under its own MIT license. Third-party components retain their upstream license terms. [Environment license](LICENSE) · [Concordance license](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance/blob/main/LICENSE)
 
 | Component | Source and packaging |
 |---|---|
@@ -12,4 +12,4 @@ This is an environment for research use. Use of AmpliconSuite Cross-Version Conc
 | Mosek, Gurobi | Their installers, libraries and license files are not bundled. The optional setup command installs the Mosek client from the publisher's Python distribution into a user-owned, separately mounted directory. [Mosek license](https://docs.mosek.com/license/license.pdf) · [Gurobi license](https://cdn.gurobi.com/wp-content/uploads/Gurobi-Standard-EULA-Aug-2025.pdf) |
 | Debian and Python dependencies | Debian package sources and exact source versions are identified by `/opt/environment-provenance/debian-packages.tsv`. Source packages are available via [Debian Sources](https://sources.debian.org/). Python distribution notices and metadata are retained in the respective site-packages directories. The Python base is pinned to a digest in `Dockerfile`. |
 
-The runtime metadata records the pinned program commit, supported CPU/OS, solver scope and installed package versions. The public image build context only includes runtime scripts and package specifications. The analysis examples mount all user data and licenses outside that context.
+The runtime metadata records the pinned program commit, supported CPU/OS, solver scope and installed package versions. The public image build context includes runtime scripts, package specifications, the MIT license and third-party notices. The analysis examples mount all user data and licenses outside that context.

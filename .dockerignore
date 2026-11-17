@@ -1,5 +1,7 @@
 **
 !Dockerfile
+!LICENSE
+!THIRD_PARTY.md
 !concordance-source.lock.json
 !requirements/
 !requirements/*.txt

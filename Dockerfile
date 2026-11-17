@@ -2,7 +2,7 @@
 FROM python:3.12-slim-bookworm@sha256:0f086103b026048cc50cb5da25ec435c023c5241a83fc44daea593377abc61c4
 
 ARG TARGETARCH
-ARG CONCORDANCE_COMMIT=cac97f7ae449546b897918cc8154bf3e23cf20a0
+ARG CONCORDANCE_COMMIT=ae4d13edec26500558686c2c9fa31da0e9673c40
 COPY requirements/ /opt/environment-requirements/
 RUN test "$TARGETARCH" = amd64 \
     && apt-get update \
@@ -18,6 +18,7 @@ ENV PATH="/opt/concordance-venvs/concordance/bin:${PATH}" \
 COPY concordance-source.lock.json /opt/concordance-source.lock.json
 COPY scripts/ /opt/environment-scripts/
 RUN CONCORDANCE_COMMIT="$CONCORDANCE_COMMIT" /usr/local/bin/python /opt/environment-scripts/build_runtime.py
+COPY LICENSE THIRD_PARTY.md /opt/environment-provenance/
 RUN chmod +x /opt/environment-scripts/entrypoint.sh /opt/environment-scripts/smoke.sh
 WORKDIR /work
 ENTRYPOINT ["/opt/environment-scripts/entrypoint.sh"]

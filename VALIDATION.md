@@ -1,8 +1,8 @@
 # Validation status
 
-The 0.3.1 recipe targets Linux amd64 and the pinned Python 3.12 Bookworm base image. The [Concordance source lock](concordance-source.lock.json) records the SHA-256 of each public 0.3.1 source file. The image records the Git commit that matched the lock at build time and reuses that commit when bootstrapping the mounted cache.
+The 0.3.2 recipe targets Linux amd64 and the pinned Python 3.12 Bookworm base image. The [Concordance source lock](concordance-source.lock.json) records the SHA-256 of each public 0.3.2 source file. The image records the Git commit that matched the lock at build time and reuses that commit when bootstrapping the mounted cache.
 
-## AmpliconSuite Cross-Version Concordance 0.3.1
+## AmpliconSuite Cross-Version Concordance 0.3.2
 
 Track the current Linux amd64 build, component tests and publication in [GitHub Actions](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance-Environments/actions).
 
