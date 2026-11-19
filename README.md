@@ -15,7 +15,7 @@
 
 ## 第一次使用
 
-以下命令在 Bash 中执行。可拉取通过构建测试后发布的 0.4.3 镜像，也可按文末说明构建本地镜像。为 0.4.3 使用独立的 `cache-0.4.3` 源码缓存。
+以下命令在 Bash 中执行。0.4.3 镜像已通过 Linux amd64 构建和组件测试，可直接拉取。为 0.4.3 使用独立的 `cache-0.4.3` 源码缓存。
 
 ```bash
 IMAGE=ghcr.io/yenningc/ampliconsuite-cross-version-concordance-environments:0.4.3

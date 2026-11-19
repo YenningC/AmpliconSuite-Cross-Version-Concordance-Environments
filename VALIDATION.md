@@ -2,7 +2,9 @@
 
 ## AmpliconSuite Cross-Version Concordance 0.4.3
 
-The Dockerfile pins program revision `daf6144065ae649054fe9176ca6a685e765e0893`. All 127 files in the published GitHub archive were verified against the source lock. The Linux amd64 build uses the established upstream component environments. Its smoke suite includes component cache and stage timing tests. Build and publication status are recorded in the [environment workflow](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance-Environments/actions/workflows/environment.yml).
+The Dockerfile pins program revision `daf6144065ae649054fe9176ca6a685e765e0893`. All 127 files in the published GitHub archive were verified against the source lock. The Linux amd64 build uses the established upstream component environments. Its smoke suite includes component cache and stage timing tests. The Linux amd64 build, synthetic component tests and image publication passed. Both public tags `0.4.3` and `0.4.3-b52aa1b27a83` were retrieved anonymously and verified against manifest digest `sha256:acc17e34d54b55c590dcc4327c7afd826481606464eea0303d71138c9696311d`. [Linux build and publication](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance-Environments/actions/runs/44583227338)
+
+The main program passed its Python 3.10 and 3.12 workflows (354 passed and one optional native CNVkit case skipped per interpreter). All 355 tests passed locally with that native case enabled. [Python regressions](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance/actions/runs/44582790036) · [Native AA/AC controls](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance/blob/daf6144065ae649054fe9176ca6a685e765e0893/docs/validation_status.md)
 
 ## AmpliconSuite Cross-Version Concordance 0.4.2
 
