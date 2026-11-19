@@ -1,6 +1,8 @@
 # Validation status
 
-The 0.4.2 recipe targets Linux amd64 and the pinned Python 3.12 Bookworm base image. The [Concordance source lock](concordance-source.lock.json) records the SHA-256 of each public 0.4.2 source file. The image records the Git commit that matched the lock at build time and reuses that commit when bootstrapping the mounted cache.
+## AmpliconSuite Cross-Version Concordance 0.4.3
+
+The Dockerfile pins program revision `daf6144065ae649054fe9176ca6a685e765e0893`. All 127 files in the published GitHub archive were verified against the source lock. The Linux amd64 build uses the established upstream component environments. Its smoke suite includes component cache and stage timing tests. Build and publication status are recorded in the [environment workflow](https://github.com/YenningC/AmpliconSuite-Cross-Version-Concordance-Environments/actions/workflows/environment.yml).
 
 ## AmpliconSuite Cross-Version Concordance 0.4.2
 
