@@ -13,6 +13,9 @@ from ascompare.concordance_cnv import load_builtin_map
 from ascompare.versions import _check_source, load_lock
 
 
+CNVKIT_VERSIONS = ("0.9.10", "0.9.13", "0.9.14")
+
+
 def read_object(path):
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -49,7 +52,7 @@ def ac_environment(lock_entry):
 
 
 def configure_manifest(manifest, prepared, lock, venv_root, selected=None,
-                       mosek_pythonpath=None, mosek_license=None):
+                       mosek_pythonpath=None, mosek_license=None, cnvkit_versions=None):
     mode = manifest.get("mode")
     if mode not in ("with_bam", "results_only"):
         raise ValueError("mode must be with_bam or results_only")
@@ -141,6 +144,29 @@ def configure_manifest(manifest, prepared, lock, venv_root, selected=None,
 
     result = copy.deepcopy(manifest)
     result.update(reference_version=FIXED_REFERENCE, target_versions=targets, runtimes=runtimes)
+    if cnvkit_versions is None and mode == "with_bam":
+        cnvkit_versions = CNVKIT_VERSIONS
+    if cnvkit_versions:
+        registry = result.setdefault("cnvkit_runtimes", [])
+        if (not isinstance(registry, list)
+                or any(not isinstance(row, dict) or not isinstance(row.get("version"), str)
+                       for row in registry)):
+            raise ValueError("cnvkit_runtimes must be an array of versioned runtime entries")
+        existing = [row["version"] for row in registry]
+        if len(set(existing)) != len(existing):
+            raise ValueError("cnvkit_runtimes has duplicate versions")
+        for version in dict.fromkeys(cnvkit_versions):
+            if version not in CNVKIT_VERSIONS:
+                raise ValueError(f"The image has no exact CNVkit runtime for {version}")
+            if version in existing:
+                warnings.append(f"Kept the existing CNVkit {version} registry entry. Remove that entry before configuring the image-provided runtime.")
+                continue
+            cnvkit_bin = venv_root / f"cnvkit-{version}" / "bin"
+            registry.append({
+                "version": version,
+                "python": executable(cnvkit_bin / "python"),
+                "script": executable(cnvkit_bin / "cnvkit.py"),
+            })
     return result, warnings
 
 
@@ -151,6 +177,8 @@ def main():
     parser.add_argument("--prepared", type=Path, default=Path("/sources/prepared_panel.json"))
     parser.add_argument("--venv-root", type=Path, default=Path("/opt/concordance-venvs"))
     parser.add_argument("--versions", nargs="+", help="Limit runtime and target versions to these Suite IDs plus the fixed reference")
+    parser.add_argument("--cnvkit-versions", nargs="+", choices=CNVKIT_VERSIONS,
+                        help="Register selected CNVkit runtimes for the local comparator; with_bam defaults to all three image versions; existing entries are kept")
     parser.add_argument("--mosek-pythonpath", type=Path, help="Mounted directory containing the user-installed MOSEK Python package")
     parser.add_argument("--mosek-license", type=Path, help="Mounted MOSEK license filename, required for MOSEK AA solver runs")
     args = parser.parse_args()
@@ -168,7 +196,7 @@ def main():
         result, warnings = configure_manifest(
             read_object(args.input), read_object(args.prepared), load_lock(), args.venv_root.absolute(),
             args.versions, args.mosek_pythonpath and args.mosek_pythonpath.resolve(),
-            args.mosek_license and args.mosek_license.resolve(),
+            args.mosek_license and args.mosek_license.resolve(), args.cnvkit_versions,
         )
         with args.out.open("x", encoding="utf-8") as handle:
             json.dump(result, handle, indent=2)

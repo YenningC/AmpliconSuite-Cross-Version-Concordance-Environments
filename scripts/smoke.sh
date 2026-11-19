@@ -11,13 +11,15 @@ cd "$CONCORDANCE_CHECKOUT"
 test -s "$root/results-only/report.md"
 test -s "$root/results-only/cohort_compatibility_metrics.tsv"
 test -s "$root/results-only/sample_reports.md"
-for test_file in test_concordance_batch.py test_concordance_cohort_plot.py test_concordance_progress.py; do
+for test_file in test_concordance_batch.py test_concordance_cohort_plot.py test_concordance_progress.py \
+  test_local_cnv_comparator.py test_local_cnv_reports.py test_upstream_similarity.py \
+  test_concordance_downstream.py test_concordance_aa_stats.py; do
   "$python" -m unittest discover -s tests -p "$test_file" -v
 done
 /opt/concordance-venvs/aa/bin/python scripts/probe_clarabel.py \
   --sources /sources --out "$root/clarabel-probes.json"
 "$python" /opt/environment-scripts/smoke_components.py /sources/prepared_panel.json
-for version in 0.9.10 0.9.13; do
+for version in 0.9.10 0.9.13 0.9.14; do
   CNVKIT_SMOKE_PYTHON="/opt/concordance-venvs/cnvkit-$version/bin/python" \
     CNVKIT_SMOKE_VERSION="$version" \
     CNVKIT_SMOKE_EXTRA_PATH=/usr/bin \

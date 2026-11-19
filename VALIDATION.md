@@ -1,6 +1,14 @@
 # Validation status
 
-The 0.4.0 recipe targets Linux amd64 and the pinned Python 3.12 Bookworm base image. The [Concordance source lock](concordance-source.lock.json) records the SHA-256 of each public 0.4.0 source file. The image records the Git commit that matched the lock at build time and reuses that commit when bootstrapping the mounted cache.
+The 0.4.2 recipe targets Linux amd64 and the pinned Python 3.12 Bookworm base image. The [Concordance source lock](concordance-source.lock.json) records the SHA-256 of each public 0.4.2 source file. The image records the Git commit that matched the lock at build time and reuses that commit when bootstrapping the mounted cache.
+
+## AmpliconSuite Cross-Version Concordance 0.4.2
+
+The Dockerfile pins main-program commit `664c8d9b869ceb365ed8a6457123404f8ee89278`. The environment source lock records all 118 public files from the 0.4.2 release allowlist. The recipe adds an isolated CNVkit 0.9.14 runtime for explicit source/comparison registration, retaining the native Suite 0.9.10/0.9.13 assignments. The with-BAM configurator registers all three bundled runtimes by default, preserves existing user entries with a warning, and supports a restricted registration list.
+
+Local checks verified all 118 files from the published source archive, Python/shell syntax, workflow parsing and all ten README shell examples. All 65 selected batch, cohort, progress, CNVkit comparator, upstream similarity and downstream reporting regressions passed on synthetic inputs. Nine targeted configurator checks also passed, covering exact virtualenv paths, all eleven native recipe mappings, custom registry preservation, unavailable runtimes and results-only behavior.
+
+Linux build, component smoke tests and GHCR publication of this recipe are pending. The smoke tests cover all three CNVkit CBS versions on synthetic BAMs, the configurator’s registry preservation and native mapping, and the source-version CNVkit comparison, upstream similarity and AA/AC reporting regressions. These checks use public software and synthetic data. Patient compatibility requires the appropriate patient-level analysis.
 
 ## AmpliconSuite Cross-Version Concordance 0.4.0
 

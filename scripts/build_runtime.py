@@ -97,6 +97,8 @@ def build_environments(directory, code, commit, lock):
     ac102 = make_venv('ac-bfb102')
     cnv13 = make_venv('cnvkit-0.9.13')
     pip(cnv13, '--ignore-installed', '--no-deps', '--no-build-isolation', 'CNVkit==0.9.13')
+    cnv14 = make_venv('cnvkit-0.9.14')
+    pip(cnv14, '--ignore-installed', '--no-deps', '--no-build-isolation', 'CNVkit==0.9.14')
     cnv10 = make_venv('cnvkit-0.9.10', shared=False)
     pip(cnv10, 'setuptools==80.9.0', 'wheel==0.45.1', '-r', REQUIREMENTS / 'cnvkit-0.9.10.txt')
     # The old CBS CLI imports pomegranate at startup but never runs the HMM.
@@ -106,7 +108,7 @@ def build_environments(directory, code, commit, lock):
         install_bfb(concordance, python, suite, directory, code)
     save_inventory({
         'concordance': concordance, 'aa': aa, 'ac-bfb101': ac101, 'ac-bfb102': ac102,
-        'cnvkit-0.9.10': cnv10, 'cnvkit-0.9.13': cnv13,
+        'cnvkit-0.9.10': cnv10, 'cnvkit-0.9.13': cnv13, 'cnvkit-0.9.14': cnv14,
     }, commit, lock)
 
 
